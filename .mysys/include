@@ -11,4 +11,3 @@ alias k=kubectl
 
 . "$MYSYS_PATH/.variables"
 . "$MYSYS_PATH/.secrets"
-

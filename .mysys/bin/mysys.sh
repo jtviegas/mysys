@@ -64,7 +64,7 @@ update(){
 
   cd "$mysys_folder"
 
-curl -L https://api.github.com/repos/jtviegas-sandbox/mysys/releases/latest | grep "browser_download_url.*mysys\.tar\.bz2" | cut -d '"' -f 4 | wget -qi -
+  curl -L https://api.github.com/repos/jtviegas-sandbox/mysys/releases/latest | grep "browser_download_url.*mysys\.tar\.bz2" | cut -d '"' -f 4 | wget -qi -
   tar xjpvf $TAR_FILE
   if [ ! "$?" -eq "0" ] ; then echo "[update] could not untar it" && cd "$_pwd" && return 1; fi
   rm $TAR_FILE
@@ -92,7 +92,7 @@ config(){
   cd ~/
 
   if [ ! -f ".pypirc" ] && [ ! -z "$PYPI_TOKEN" ]; then
-    info "[] no '.pypirc' going to create it"
+    info "[config] no '.pypirc' going to create it"
     echo "[pypi]" > .pypirc
     echo "username = __token__" >> .pypirc
     echo "password = $PYPI_TOKEN" >> .pypirc
