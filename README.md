@@ -29,9 +29,9 @@ you should now see this when running `./mysys.sh`:
         - update: updates 'mysys'
         - release: packages mysys into a tar for release purposes
 
-* __source__ the `.mysys/include` file in your system's profile initialisation file ( `.zprofile`, `.bash_profile`, etc... )
+* __source__ the `.mysys/env/include` file in your system's profile initialisation file ( `.zprofile`, `.bash_profile`, etc... )
     ```
-    . ~/.mysys/include
+    . ~/.mysys/env/include
     ```
 * restart the system
 * you should now invoke `mysys.sh` from everywhere in your terminal
@@ -49,8 +49,8 @@ you should now see this when running `./mysys.sh`:
 ## usage
 
 * export system wide variables and secrets from within your local __mysys__ files, they will be loaded every time the system starts:
-  * `~/.mysys/.variables`
-  * `~/.mysys/.secrets`
+  * `~/.mysys/env/.variables`
+  * `~/.mysys/env/.secrets`
 
 * access various utility scripts provided by __mysys__ in the terminal, as in:
   * `mysys_*`
