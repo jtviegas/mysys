@@ -1,5 +1,5 @@
 ---
-mode: 'edit'
+agent: 'edit'
 description: 'adds doctring to a file'
 ---
 
