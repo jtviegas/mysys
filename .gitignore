@@ -1,3 +1,4 @@
 .secrets
 .variables
+.local_variables
 .DS_Store
