@@ -10,6 +10,7 @@ if [ -z "$this_folder" ]; then
   this_folder=$(dirname $(readlink -f $0))
 fi
 mysys_folder=$(dirname "$this_folder")
+env_folder="$mysys_folder/env"
 # -------------------------------
 debug(){
     local __msg="$1"
@@ -36,18 +37,18 @@ export FILE_VARIABLES=${FILE_VARIABLES:-".variables"}
 export FILE_SECRETS=${FILE_SECRETS:-".secrets"}
 export TAR_FILE="mysys.tar.bz2"
 # -------------------------------
-if [ ! -f "$mysys_folder/$FILE_VARIABLES" ]; then
+if [ ! -f "$env_folder/$FILE_VARIABLES" ]; then
   warn "we DON'T have a $FILE_VARIABLES variables file - creating it"
-  touch "$mysys_folder/$FILE_VARIABLES"
+  touch "$env_folder/$FILE_VARIABLES"
 else
-  . "$mysys_folder/$FILE_VARIABLES"
+  . "$env_folder/$FILE_VARIABLES"
 fi
 
-if [ ! -f "$mysys_folder/$FILE_SECRETS" ]; then
+if [ ! -f "$env_folder/$FILE_SECRETS" ]; then
   warn "we DON'T have a $FILE_SECRETS secrets file - creating it"
-  touch "$mysys_folder/$FILE_SECRETS"
+  touch "$env_folder/$FILE_SECRETS"
 else
-  . "$mysys_folder/$FILE_SECRETS"
+  . "$env_folder/$FILE_SECRETS"
 fi
 
 # ---------- FUNCTIONS ----------
@@ -73,38 +74,6 @@ update(){
   echo "[update] ...done."
 }
 
-release(){
-  info "[release] ..."
-  _pwd=`pwd`
-  cd "$mysys_folder"
-
-  tar cjpvf "$TAR_FILE" "include" "bin"
-  if [ ! "$?" -eq "0" ] ; then err "[release] could not tar it" && cd "$_pwd" && return 1; fi
-  ls -altr
-  cd "$_pwd"
-  info "[release] ...done."
-}
-
-config(){
-  info "[config] ..."
-  _pwd=`pwd`
-
-  cd ~/
-
-  if [ ! -f ".pypirc" ] && [ ! -z "$PYPI_TOKEN" ]; then
-    info "[config] no '.pypirc' going to create it"
-    echo "[pypi]" > .pypirc
-    echo "username = __token__" >> .pypirc
-    echo "password = $PYPI_TOKEN" >> .pypirc
-  fi
-
-  cd "$_pwd"
-  info "[config] ...done."
-}
-
-
-
-
 
 # -------------------------------------
 usage() {
@@ -114,10 +83,6 @@ usage() {
 
     commands:
       - update: updates 'mysys'
-      - release: packages mysys into a tar for release purposes
-      - config: adds several system configurations
-                  - .pypirc
-                  - ...
 EOM
   exit 1
 }
@@ -127,12 +92,6 @@ debug "1: $1 2: $2 3: $3 4: $4 5: $5 6: $6 7: $7 8: $8 9: $9"
 case "$1" in
   update)
     update
-    ;;
-  release)
-    release
-    ;;
-  config)
-    config
     ;;
   *)
     usage

@@ -10,7 +10,7 @@ export PATH="${MYSYS_BIN}:${PATH}"
 
 alias k=kubectl
 
-# sourcing
+# sourcing variables and secrets
 
 . "$MYSYS_ENV/.variables"
 . "$MYSYS_ENV/.secrets"

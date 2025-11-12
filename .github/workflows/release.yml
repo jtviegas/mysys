@@ -12,11 +12,10 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: create release bundle
-      run: ./.mysys/bin/mysys.sh release
+      run: ./helper.sh release 
     - name: create release
       uses: ncipollo/release-action@v1
       with:
         artifactErrorsFailBuild: true
-        artifacts: "./.mysys/mysys.tar.bz2"
+        artifacts: "./mysys.tar.bz2"
         generateReleaseNotes: true
-
