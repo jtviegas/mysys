@@ -114,9 +114,9 @@ usage() {
   usage:
   $(basename $0) { option }
     options:
-      - release:                              packages mysys into a tar for release purposes
-      - get_latest_tag                        retrieves the latest git tag from the repository
-      - git_tag_and_push VERSION COMMIT_HASH  creates a git tag and pushes it to remote repository
+      - release:                  packages mysys into a tar for release purposes
+      - get_latest_tag            retrieves the latest git tag from the repository
+      - tag VERSION COMMIT_HASH   creates a git tag and pushes it to remote repository
 EOM
   exit 1
 }
@@ -127,7 +127,7 @@ case "$1" in
   get_latest_tag)
     get_latest_tag
     ;;
-  git_tag_and_push)
+  tag)
     git_tag_and_push "$2" "$3"
     ;;
   release)
