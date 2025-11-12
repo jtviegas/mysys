@@ -94,6 +94,8 @@ bashutils="$this_folder/$INCLUDE_FILE"
 export MYSYS_FOLDER="$this_folder/.mysys"
 export TAR_FILE="mysys.tar.bz2"
 
+# ---------- FUNCTIONS ----------
+
 release(){
   info "[release] ..."
 
