@@ -1,0 +1,16 @@
+# exports
+
+export MYSYS_PATH=~/.mysys
+export MYSYS_BIN="${MYSYS_PATH}/bin"
+export MYSYS_ENV="${MYSYS_PATH}/env"
+export PATH="${MYSYS_BIN}:${PATH}"
+
+
+# handy aliases
+
+alias k=kubectl
+
+# sourcing
+
+. "$MYSYS_ENV/.variables"
+. "$MYSYS_ENV/.secrets"
