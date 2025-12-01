@@ -78,7 +78,7 @@ update(){
 # -------------------------------------
 usage() {
   echo -n "mysys version: "
-  cat .version
+  cat "$this_folder/.version"
 
   cat <<EOM
   usage:
