@@ -77,6 +77,9 @@ update(){
 
 # -------------------------------------
 usage() {
+  echo -n "mysys version: "
+  cat .version
+
   cat <<EOM
   usage:
   $(basename $0) { command }

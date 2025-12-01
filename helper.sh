@@ -99,6 +99,7 @@ export TAR_FILE="mysys.tar.bz2"
 release(){
   info "[release] ..."
 
+  echo "$VERSION" > "$MYSYS_FOLDER/bin/.version"
   tar cjpvf "$TAR_FILE" -C "$MYSYS_FOLDER" .
   if [ ! "$?" -eq "0" ] ; then err "[release] could not tar it" && return 1; fi
 
@@ -116,7 +117,7 @@ usage() {
     options:
       - release:                  packages mysys into a tar for release purposes
       - get_latest_tag            retrieves the latest git tag from the repository
-      - tag VERSION COMMIT_HASH   creates a git tag and pushes it to remote repository
+      - tag COMMIT_HASH           creates a git tag and pushes it to remote repository, version is defined in .variables file
 EOM
   exit 1
 }
@@ -128,7 +129,7 @@ case "$1" in
     get_latest_tag
     ;;
   tag)
-    git_tag_and_push "$2" "$3"
+    git_tag_and_push "$VERSION" "$2"
     ;;
   release)
     release
