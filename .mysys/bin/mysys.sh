@@ -36,6 +36,7 @@ err(){
 export FILE_VARIABLES=${FILE_VARIABLES:-".variables"}
 export FILE_SECRETS=${FILE_SECRETS:-".secrets"}
 export TAR_FILE="mysys.tar.bz2"
+export CLAUDE_FOLDER="~/.claude"
 # -------------------------------
 if [ ! -f "$env_folder/$FILE_VARIABLES" ]; then
   warn "we DON'T have a $FILE_VARIABLES variables file - creating it"
@@ -69,6 +70,13 @@ update(){
   tar xjpvf $TAR_FILE
   if [ ! "$?" -eq "0" ] ; then echo "[update] could not untar it" && cd "$_pwd" && return 1; fi
   rm $TAR_FILE
+
+if [ -d "$CLAUDE_FOLDER" ] ; then
+    echo "[update] adding coder skill to claude..."
+    [ ! -d "$CLAUDE_FOLDER/skills" ] && mkdir -p "$CLAUDE_FOLDER/skills"
+    cd "$CLAUDE_FOLDER/skills" && ln -sf "$mysys_folder/agent_docs/skills/coder" "coder"
+    cd "$mysys_folder"
+  fi  
 
   cd "$_pwd"
   echo "[update] ...done."
