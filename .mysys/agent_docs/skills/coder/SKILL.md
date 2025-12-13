@@ -74,6 +74,22 @@ This is achieved through:
 - Pre-commit hooks for quality gates
 - High test coverage focusing on contracts
 
+### Documentation Resources
+
+**IMPORTANT**: When working with any library or framework, always use the **context7 MCP server** to access up-to-date, version-specific documentation and code examples. This ensures:
+- Current API usage patterns (no deprecated methods)
+- Version-specific syntax and features
+- Accurate code examples that work with the installed version
+- Breaking changes and migration guides between versions
+
+**How to use context7**:
+1. Query for official documentation of the specific library version you're using
+2. Request code examples for specific use cases
+3. Check for version-specific breaking changes or deprecations
+4. Verify best practices for the current version
+
+This takes precedence over the pattern examples in this skill when there are conflicts or version differences.
+
 ## Language-Specific Patterns
 
 ### Python Patterns

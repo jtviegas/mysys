@@ -7,30 +7,28 @@ shopt -s nullglob
 # -------------------------------
 this_folder="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 if [ -z "$this_folder" ]; then
-  this_folder=$(dirname $(readlink -f $0))
+  this_folder=$(dirname "$(readlink -f "$0")")
 fi
-parent_folder=$(dirname "$this_folder")
-
 # -------------------------------
 # --- required functions
 debug(){
     local __msg="$1"
-    echo " [DEBUG] `date` ... $__msg "
+    echo " [DEBUG] $(date) ... $__msg "
 }
 
 info(){
     local __msg="$1"
-    echo " [INFO]  `date` ->>> $__msg "
+    echo " [INFO]  $(date) ->>> $__msg "
 }
 
 warn(){
     local __msg="$1"
-    echo " [WARN]  `date` *** $__msg "
+    echo " [WARN]  $(date) *** $__msg "
 }
 
 err(){
     local __msg="$1"
-    echo " [ERR]   `date` !!! $__msg "
+    echo " [ERR]   $(date) !!! $__msg "
 }
 
 file_age_days() {
@@ -60,6 +58,7 @@ if [ ! -f "$this_folder/$FILE_VARIABLES" ]; then
   warn "we DON'T have a $FILE_VARIABLES variables file - creating it"
   touch "$this_folder/$FILE_VARIABLES"
 else
+  # shellcheck disable=SC1090
   . "$this_folder/$FILE_VARIABLES"
 fi
 
@@ -67,6 +66,7 @@ if [ ! -f "$this_folder/$FILE_LOCAL_VARIABLES" ]; then
   warn "we DON'T have a $FILE_LOCAL_VARIABLES variables file - creating it"
   touch "$this_folder/$FILE_LOCAL_VARIABLES"
 else
+  # shellcheck disable=SC1090
   . "$this_folder/$FILE_LOCAL_VARIABLES"
 fi
 
@@ -74,17 +74,19 @@ if [ ! -f "$this_folder/$FILE_SECRETS" ]; then
   warn "we DON'T have a $FILE_SECRETS secrets file - creating it"
   touch "$this_folder/$FILE_SECRETS"
 else
+  # shellcheck disable=SC1090
   . "$this_folder/$FILE_SECRETS"
 fi
 
 # ---------- include bashutils ----------
 # --- refresh file if older than 1 day
 bashutils="$this_folder/$INCLUDE_FILE"
-[ $(file_age_days "$bashutils") -gt 1 ] && \
+[ "$(file_age_days "$bashutils")" -gt 1 ] && \
   curl -sf https://raw.githubusercontent.com/jtviegas/bashutils/master/.bashutils -o "${bashutils}.tmp" && \
   mv "${bashutils}.tmp" "$bashutils"
 # --- source it
-. $bashutils
+# shellcheck disable=SC1090
+. "$bashutils"
 
 # <=== HEADER SECTION END  <===
 
@@ -100,8 +102,7 @@ release(){
   info "[release] ..."
 
   echo "$VERSION" > "$MYSYS_FOLDER/bin/.version"
-  tar cjpvf "$TAR_FILE" -C "$MYSYS_FOLDER" .
-  if [ ! "$?" -eq "0" ] ; then err "[release] could not tar it" && return 1; fi
+  if tar cjpvf "$TAR_FILE" -C "$MYSYS_FOLDER" . ; then err "[release] could not tar it" && return 1; fi
 
   info "[release] ...done."
 }
@@ -113,7 +114,7 @@ release(){
 usage() {
   cat <<EOM
   usage:
-  $(basename $0) { option }
+  $(basename "$0") { option }
     options:
       - release:                  packages mysys into a tar for release purposes
       - get_latest_tag            retrieves the latest git tag from the repository

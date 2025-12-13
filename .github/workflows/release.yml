@@ -11,6 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: Validate shell scripts with shellcheck
+      run: |
+        sudo apt-get update && sudo apt-get install -y shellcheck
+        shellcheck helper.sh
+        shellcheck .mysys/bin/mysys.sh
     - name: create release bundle
       run: ./helper.sh release 
     - name: create release

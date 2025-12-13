@@ -7,29 +7,29 @@ shopt -s nullglob
 # -------------------------------
 this_folder="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 if [ -z "$this_folder" ]; then
-  this_folder=$(dirname $(readlink -f $0))
+  this_folder=$(dirname "$(readlink -f "$0")")
 fi
 mysys_folder=$(dirname "$this_folder")
 env_folder="$mysys_folder/env"
 # -------------------------------
 debug(){
     local __msg="$1"
-    echo " [DEBUG] `date` ... $__msg "
+    echo " [DEBUG] $(date) ... $__msg "
 }
 
 info(){
     local __msg="$1"
-    echo " [INFO]  `date` ->>> $__msg "
+    echo " [INFO]  $(date) ->>> $__msg "
 }
 
 warn(){
     local __msg="$1"
-    echo " [WARN]  `date` *** $__msg "
+    echo " [WARN]  $(date) *** $__msg "
 }
 
 err(){
     local __msg="$1"
-    echo " [ERR]   `date` !!! $__msg "
+    echo " [ERR]   $(date) !!! $__msg "
 }
 
 # ---------- CONSTANTS ----------
@@ -42,6 +42,7 @@ if [ ! -f "$env_folder/$FILE_VARIABLES" ]; then
   warn "we DON'T have a $FILE_VARIABLES variables file - creating it"
   touch "$env_folder/$FILE_VARIABLES"
 else
+   # shellcheck disable=SC1090
   . "$env_folder/$FILE_VARIABLES"
 fi
 
@@ -49,6 +50,7 @@ if [ ! -f "$env_folder/$FILE_SECRETS" ]; then
   warn "we DON'T have a $FILE_SECRETS secrets file - creating it"
   touch "$env_folder/$FILE_SECRETS"
 else
+   # shellcheck disable=SC1090
   . "$env_folder/$FILE_SECRETS"
 fi
 
@@ -57,28 +59,28 @@ fi
 update(){
   echo "[update] ..."
 
-  _pwd=`pwd`
+  _pwd=$(pwd)
 
   if [ ! -d "$mysys_folder" ]; then
     err "can't find $mysys_folder folder ! sorry I am leaving"
     exit 1
   fi
 
-  cd "$mysys_folder"
+  cd "$mysys_folder" || exit 1
 
   curl -L https://api.github.com/repos/jtviegas/mysys/releases/latest | grep "browser_download_url.*mysys\.tar\.bz2" | cut -d '"' -f 4 | wget -qi -
-  tar xjpvf $TAR_FILE
-  if [ ! "$?" -eq "0" ] ; then echo "[update] could not untar it" && cd "$_pwd" && return 1; fi
+  #tar xjpvf $TAR_FILE
+  if tar xjpvf $TAR_FILE ; then echo "[update] could not untar it" && cd "$_pwd" && return 1; fi
   rm $TAR_FILE
 
 if [ -d "$CLAUDE_FOLDER" ] ; then
     [ ! -d "$CLAUDE_FOLDER/skills" ] && mkdir -p "$CLAUDE_FOLDER/skills"
     cd "$CLAUDE_FOLDER/skills" && ln -sf "$mysys_folder/agent_docs/skills/coder" "coder"
     info "[update] coder skill added to claude"
-    cd "$mysys_folder"
+    cd "$mysys_folder" || exit 1
   fi  
 
-  cd "$_pwd"
+  cd "$_pwd" || exit 1
   echo "[update] ...done."
 }
 
@@ -90,7 +92,7 @@ usage() {
 
   cat <<EOM
   usage:
-  $(basename $0) { command }
+  $(basename "$0") { command }
 
     commands:
       - update: updates 'mysys'

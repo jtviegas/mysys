@@ -33,8 +33,12 @@ public class ChangePassword
 
   private static String promptForPassword(String which)
   {
-    System.out.printf("Enter %s password: ", which);
-    Scanner kbd = new Scanner(System.in);
-    return kbd.nextLine();
+    Console console = System.console();
+    if (console == null)
+    {
+      throw new RuntimeException("No console available for secure password input");
+    }
+    char[] password = console.readPassword("Enter %s password: ", which);
+    return new String(password);
   }
 }
