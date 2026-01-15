@@ -1,21 +1,15 @@
+
+
 #####################
 # assorted
 #####################
 
-export PIP_DEFAULT_TIMEOUT=300
 
-# pandas
-export PANDAS_DISPLAY_MAX_COLUMNS=None
-export PANDAS_DISPLAY_WIDTH=None
-export PANDAS_DISPLAY_MAX_COLWIDTH=None
-
-# pytorch
-export PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.0
 
 # aws
 export TGEDR_AWS_ACCESS_KEY_ID=...
 export TGEDR_IAC_AWS_ACCESS_KEY_ID=...
-export JTV_GITHUB_EMAIL="3536754+jtviegas@users.noreply.github.com"
+
 
 export PYTHON_3_10=/opt/homebrew/opt/python@3.10/bin/python3.10
 export PYTHON_3_11=/opt/homebrew/opt/python@3.11/bin/python3.11
@@ -26,11 +20,6 @@ export PYTHON_3_9=/opt/homebrew/opt/python@3.9/bin/python3.9
 export PYTHON=$PYTHON_3_11
 export PATH="/opt/homebrew/opt/python@3.11/bin:${PATH}"
 
-# poetry specific
-export POETRY_NO_INTERACTION=1
-export POETRY_VIRTUALENVS_IN_PROJECT=true
-export POETRY_VIRTUALENVS_CREATE=true
-export POETRY_CACHE_DIR=/tmp/poetry_cache
 
 export REDDIT_API_CLIENTID_TGEDRDEV=...
 export REDDIT_USER=...

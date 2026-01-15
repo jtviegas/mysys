@@ -11,6 +11,12 @@ export PATH="${MYSYS_BIN}:${PATH}"
 alias k=kubectl
 
 # sourcing variables and secrets
-
+. "$MYSYS_ENV/.sys_variables"
 . "$MYSYS_ENV/.variables"
 . "$MYSYS_ENV/.secrets"
+
+# doing some initial setup
+if [  -f "$MYSYS_ENV/.init" ] ; then
+  . "$MYSYS_ENV/.init"
+fi
+
