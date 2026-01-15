@@ -102,7 +102,9 @@ release(){
   info "[release] ..."
 
   echo "$VERSION" > "$MYSYS_FOLDER/bin/.version"
-  if [ tar cjpvf "$TAR_FILE" -C "$MYSYS_FOLDER" . ] ; then err "[release] could not tar it" && return 1; fi
+  tar cjpvf "$TAR_FILE" -C "$MYSYS_FOLDER" .
+  result="$?"
+  [ ! "$result" -eq "0" ] && err "[release] could not tar it" && exit 1
 
   info "[release] ...done."
 }
