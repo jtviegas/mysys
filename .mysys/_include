@@ -16,7 +16,7 @@ alias k=kubectl
 . "$MYSYS_ENV/.secrets"
 
 # doing some initial setup
-if [  -f "$MYSYS_ENV/.init" ] ; then
+if [ -f "$MYSYS_ENV/.init" ] ; then
   . "$MYSYS_ENV/.init"
 fi
 
