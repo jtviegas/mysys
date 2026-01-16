@@ -2,7 +2,7 @@
 # mysys
 #####################
 
-export BASIC_REQS_LINUX="curl git wget shellcheck snapd"
+export BASIC_REQS_LINUX="curl git wget shellcheck snapd vim"
 export BASIC_REQS_MACOS="curl git wget shellcheck"
 export SYS_REQS_LINUX="bzip2 tar"
 
