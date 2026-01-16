@@ -131,7 +131,8 @@ sys_basic_reqs_linux(){
 sys_basic_reqs(){
   info "[sys_basic_reqs|in]"
   
-  local osname=$(uname)
+  local osname
+  osname=$(uname)
   if [[ "$OSTYPE" == "darwin"* ]]; then
   	info "[sys_basic_reqs] running in MACOS"
   	sys_basic_reqs_macos
@@ -148,9 +149,10 @@ sys_basic_reqs(){
 }
 
 sys_reqs(){
-  info "[sys_reqs|in] ($1)"
+  info "[sys_reqs|in]"
 
-   local osname=$(uname)
+   local osname
+   osname=$(uname)
   if [[ "$OSTYPE" == "darwin"* ]]; then
   	info "[sys_reqs] running in MACOS"
   	sys_reqs_macos
@@ -213,7 +215,7 @@ ssh_default_key(){
 
 	local key="id_rsa"
   local result=0
-  if [ ! -f "~/.ssh/${key}" ]; then
+  if [ ! -f "$HOME/.ssh/${key}" ]; then
   	info "creating new ssh key: ${key}"
   	ssh-keygen -t rsa -b 4096 -C "jtviegas@gmail.com" && \
   		eval "$(ssh-agent -s)" && \
