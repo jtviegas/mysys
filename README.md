@@ -28,9 +28,9 @@ you should now see this when running `./mysys.sh`:
     commands:
       - update: updates 'mysys'
 ```
-* __source__ the `.mysys/env/include` file in your system's profile initialisation file ( `.zprofile`, `.bash_profile`, etc... )
+* __source__ the `.mysys/include` file in your system's profile initialisation file ( `.zprofile`, `.bash_profile`, `.bashrc`, etc... )
     ```
-    . ~/.mysys/env/include
+    . ~/.mysys/include
     ```
 * restart the system
 * you should now invoke `mysys.sh` from everywhere in your terminal
