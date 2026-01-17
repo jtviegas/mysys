@@ -177,10 +177,8 @@ sys_basic_reqs(){
 # ---------- FUNCTIONS ----------
 
 update(){
-  echo "[update] ..."
-
+  echo "[update|in]"
   _pwd=$(pwd)
-
   if [ ! -d "$mysys_folder" ]; then
     err "can't find $mysys_folder folder ! sorry I am leaving"
     exit 1
@@ -189,19 +187,20 @@ update(){
   cd "$mysys_folder" || exit 1
 
   curl -L https://api.github.com/repos/jtviegas/mysys/releases/latest | grep "browser_download_url.*mysys\.tar\.bz2" | cut -d '"' -f 4 | wget -qi -
-  #tar xjpvf $TAR_FILE
-  if tar xjpvf $TAR_FILE ; then echo "[update] could not untar it" && cd "$_pwd" && return 1; fi
+  tar xjpvf $TAR_FILE
+   # shellcheck disable=SC2181
+  [ ! "$?" -eq "0" ] && err "[update] could not untar it" && cd "$_pwd" && return 1
   rm $TAR_FILE
 
-if [ -d "$CLAUDE_FOLDER" ] ; then
-  info "[update] claude is here"
-  [ ! -d "$CLAUDE_FOLDER/skills" ] && mkdir -p "$CLAUDE_FOLDER/skills"
-  cd "$CLAUDE_FOLDER/skills" && ln -sf "$mysys_folder/agent_docs/skills/coder" "coder"
-  info "[update] coder skill added to claude"
-fi  
+  if [ -d "$CLAUDE_FOLDER" ] ; then
+    info "[update] claude is here"
+    [ ! -d "$CLAUDE_FOLDER/skills" ] && mkdir -p "$CLAUDE_FOLDER/skills"
+    cd "$CLAUDE_FOLDER/skills" && ln -sf "$mysys_folder/agent_docs/skills/coder" "coder"
+    info "[update] coder skill added to claude"
+  fi  
 
   cd "$_pwd" || exit 1
-  echo "[update] ...done."
+  echo "[update|out]"
 }
 
 
