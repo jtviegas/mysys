@@ -105,7 +105,7 @@ shlint(){
   # shellcheck disable=SC2164
   cd "$this_folder"
 
-  shellcheck helper.sh && shellcheck .mysys/bin/mysys.sh
+  shellcheck helper.sh && shellcheck .mysys/bin/*
   result="$?"
   # shellcheck disable=SC2164
   cd "$_pwd"

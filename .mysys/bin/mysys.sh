@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# ===> COMMON SECTION START  ===>
-
 # http://bash.cumulonim.biz/NullGlob.html
 shopt -s nullglob
 # -------------------------------
@@ -10,169 +8,15 @@ if [ -z "$this_folder" ]; then
   this_folder=$(dirname "$(readlink -f "$0")")
 fi
 mysys_folder=$(dirname "$this_folder")
+# shellcheck disable=SC2034
 env_folder="$mysys_folder/env"
 # -------------------------------
-debug(){
-    local __msg="$1"
-    echo " [DEBUG] $(date) ... $__msg "
-}
-
-info(){
-    local __msg="$1"
-    echo " [INFO]  $(date) ->>> $__msg "
-}
-
-warn(){
-    local __msg="$1"
-    echo " [WARN]  $(date) *** $__msg "
-}
-
-err(){
-    local __msg="$1"
-    echo " [ERR]   $(date) !!! $__msg "
-}
+# shellcheck disable=SC1091
+. "$this_folder/.include.sh"
 
 # ---------- CONSTANTS ----------
-export SYS_VARIABLES=${SYS_VARIABLES:-".sys_variables"}
-export FILE_VARIABLES=${FILE_VARIABLES:-".variables"}
-export FILE_SECRETS=${FILE_SECRETS:-".secrets"}
+
 export TAR_FILE="mysys.tar.bz2"
-# -------------------------------
-if [ ! -f "$env_folder/$SYS_VARIABLES" ]; then
-  warn "we DON'T have a $SYS_VARIABLES variables file - creating it"
-  touch "$env_folder/$SYS_VARIABLES"
-else
-   # shellcheck disable=SC1090
-  . "$env_folder/$SYS_VARIABLES"
-fi
-
-if [ ! -f "$env_folder/$FILE_VARIABLES" ]; then
-  warn "we DON'T have a $FILE_VARIABLES variables file - creating it"
-  touch "$env_folder/$FILE_VARIABLES"
-else
-   # shellcheck disable=SC1090
-  . "$env_folder/$FILE_VARIABLES"
-fi
-
-if [ ! -f "$env_folder/$FILE_SECRETS" ]; then
-  warn "we DON'T have a $FILE_SECRETS secrets file - creating it"
-  touch "$env_folder/$FILE_SECRETS"
-else
-   # shellcheck disable=SC1090
-  . "$env_folder/$FILE_SECRETS"
-fi
-
-# ---------- BASIC REQS ----------
-
-declare -A BASIC_REQS_ALL=( ["curl"]="curl" ["git"]="git" ["wget"]="wget" ["shellcheck"]="shellcheck" )
-BASIC_REQS_ALL_VAR=$(declare -p BASIC_REQS_ALL)
-export BASIC_REQS_ALL_VAR
-
-declare -A BASIC_REQS_LINUX=( ["snapd"]="snap" ["vim"]="vim" )
-BASIC_REQS_LINUX_VAR=$(declare -p BASIC_REQS_LINUX)
-export BASIC_REQS_LINUX_VAR
-
-declare -A BASIC_REQS_MACOS
-BASIC_REQS_MACOS_VAR=$(declare -p BASIC_REQS_MACOS)
-export BASIC_REQS_MACOS_VAR
-
-sys_basic_reqs_linux(){
-  info "[sys_basic_reqs_linux|in]"
-  
-  [ -z "$BASIC_REQS_ALL_VAR" ] && err "[sys_basic_reqs_linux|out] must provide BASIC_REQS_ALL_VAR env var" && usage
-  [ -z "$BASIC_REQS_LINUX_VAR" ] && err "[sys_basic_reqs_linux|out] must provide BASIC_REQS_LINUX_VAR env var" && usage
-
-  eval "$BASIC_REQS_ALL_VAR"
-  eval "$BASIC_REQS_LINUX_VAR"
-
-  local result=0
-  local command
-
-  for app in "${!BASIC_REQS_ALL[@]}"; do
-    command="${BASIC_REQS_ALL[$app]}"
-    which "$command" >/dev/null 2>&1
-    # shellcheck disable=SC2181
-    if [ $? -eq 0 ] ; then
-      #info "[sys_basic_reqs_linux] $app is already installed - skipping"
-      continue
-    fi
-    info "[sys_basic_reqs_linux] adding: $app"
-    sudo apt install "$app"
-    result="$?"
-    [ ! "$result" -eq "0" ] && err "[sys_basic_reqs_linux] could not install: $app" && exit 1
-	done
-
-  for app in "${!BASIC_REQS_LINUX[@]}"; do
-    command="${BASIC_REQS_LINUX[$app]}"
-    which "$command" >/dev/null 2>&1
-    # shellcheck disable=SC2181
-    if [ $? -eq 0 ] ; then
-      #info "[sys_basic_reqs_linux] $app is already installed - skipping"
-      continue
-    fi
-    info "[sys_basic_reqs_linux] adding: $app"
-    sudo apt install "$app"
-    result="$?"
-    [ ! "$result" -eq "0" ] && err "[sys_basic_reqs_linux] could not install: $app" && exit 1
-	done
-  
-  local msg="[sys_basic_reqs_linux|out] => ${result}"
-  [ ! "$result" -eq "0" ] && err "$msg" && exit 1
-  info "$msg"
-}
-
-sys_basic_reqs_macos(){
-  info "[sys_basic_reqs_macos|in]"
-
-  [ -z "$BASIC_REQS_ALL_VAR" ] && err "[sys_basic_reqs_macos|out] must provide BASIC_REQS_ALL_VAR env var" && usage
-  [ -z "$BASIC_REQS_MACOS_VAR" ] && err "[sys_basic_reqs_macos|out] must provide BASIC_REQS_MACOS_VAR env var" && usage
-
-  eval "$BASIC_REQS_ALL_VAR"
-  eval "$BASIC_REQS_MACOS_VAR"
-
-  local result=0
-  local command
-  
-  for app in "${!BASIC_REQS_ALL[@]}"; do
-    command="${BASIC_REQS_ALL[$app]}"
-    which "$command" >/dev/null 2>&1
-    # shellcheck disable=SC2181
-    if [ $? -eq 0 ] ; then
-      #info "[sys_basic_reqs_macos] $app is already installed - skipping"
-      continue
-    fi
-    info "[sys_basic_reqs_macos] adding: $app"
-    brew install "$app"
-    result="$?"
-    [ ! "$result" -eq "0" ] && err "[sys_basic_reqs_macos] could not install: $app" && exit 1
-	done
-
-  local msg="[sys_basic_reqs_macos|out] => ${result}"
-  [ ! "$result" -eq "0" ] && err "$msg" && exit 1
-  info "$msg"
-}
-
-sys_basic_reqs(){
-  info "[sys_basic_reqs|in]"
-  
-  local osname
-  osname=$(uname)
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-  	info "[sys_basic_reqs] running in MACOS"
-  	sys_basic_reqs_macos
-  elif [ "$osname" == "Linux" ]; then
-  	info "[sys_basic_reqs] running in LINUX"
-  	sys_basic_reqs_linux
-  else
-  	err "[sys_basic_reqs|out] as of now not supporting this OS" && exit 1
-  fi
-  result="$?"
-  local msg="[sys_basic_reqs|out] => ${result}"
-  [ ! "$result" -eq "0" ] && err "$msg" && exit 1
-  info "$msg"
-}
-
-
 
 # ---------- FUNCTIONS ----------
 
@@ -195,7 +39,7 @@ update(){
   if [ -d "$CLAUDE_FOLDER" ] ; then
     info "[update] claude is here"
     [ ! -d "$CLAUDE_FOLDER/skills" ] && mkdir -p "$CLAUDE_FOLDER/skills"
-    cd "$CLAUDE_FOLDER/skills" && ln -sf "$mysys_folder/agent_docs/skills/coder" "coder"
+    cd "$CLAUDE_FOLDER/skills" && ln -sf "$mysys_folder/agent_skills/coder" "coder"
     info "[update] coder skill added to claude"
   fi  
 
@@ -203,67 +47,35 @@ update(){
   echo "[update|out]"
 }
 
+update_from_dev_folder(){
+  echo "[update_from_dev_folder|in] ($1)"
 
-sys_reqs(){
-  info "[sys_reqs|in]"
+   [ -z "$1" ] && err "[update_from_dev_folder|out] must provide DEV_FOLDER var" && usage
+   local dev_folder="$1"
 
-   local osname
-   osname=$(uname)
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-  	info "[sys_reqs] running in MACOS"
-  	sys_reqs_macos
-  elif [ "$osname" == "Linux" ]; then
-  	info "[sys_reqs] running in LINUX"
-  	sys_reqs_linux
-  else
-  	err "[sys_reqs|out] can't support this OS" && exit 1
+  _pwd=$(pwd)
+  if [ ! -d "$mysys_folder" ]; then
+    err "can't find $mysys_folder folder ! sorry I am leaving"
+    exit 1
   fi
-  result="$?"
-  local msg="[sys_reqs|out] => ${result}"
-  [ ! "$result" -eq "0" ] && err "$msg" && exit 1
-  info "$msg"
+
+  cd "$mysys_folder" || exit 1
+
+  cp -r "$dev_folder"/* ./
+   # shellcheck disable=SC2181
+  [ ! "$?" -eq "0" ] && err "[update_from_dev_folder] could not copy it" && cd "$_pwd" && return 1
+
+  if [ -d "$CLAUDE_FOLDER" ] ; then
+    info "[update_from_dev_folder] claude is here"
+    [ ! -d "$CLAUDE_FOLDER/skills" ] && mkdir -p "$CLAUDE_FOLDER/skills"
+    cd "$CLAUDE_FOLDER/skills" && ln -sf "$mysys_folder/agent_skills/coder" "coder"
+    info "[update_from_dev_folder] coder skill added to claude"
+  fi  
+
+  cd "$_pwd" || exit 1
+  echo "[update_from_dev_folder|out]"
 }
 
-sys_reqs_linux(){
-  info "[sys_reqs_linux|in]"
-  
-  [ -z "$SYS_REQS_LINUX" ] && err "[sys_reqs_linux|out] must provide SYS_REQS_LINUX env var" && usage
-  
-  local result=0
-  info "[sys_reqs_linux] adding: vscode"
-	sudo snap install --classic code
-	result="$?"
-  [ ! "$result" -eq "0" ] && err "[sys_reqs_linux|out] could not install: vscode" && exit 1
-
-  for app in $SYS_REQS_LINUX; do
-    info "[sys_reqs_linux] adding: $app"
-    [ "$app" == "code" ] && continue
-    sudo apt install "$app" 
-    result="$?"
-    [ ! "$result" -eq "0" ] && err "[sys_reqs_linux|out] could not install: $app" && exit 1
-	done
-  
-  local msg="[sys_reqs_linux|out] => ${result}"
-  [ ! "$result" -eq "0" ] && err "$msg" && exit 1
-  info "$msg"
-}
-
-sys_reqs_macos(){
-  info "[sys_reqs_macos|in]"
-  
-  [ -z "$SYS_REQS_MACOS" ] && err "[sys_reqs_macos|out] must provide SYS_REQS_MACOS env var" && usage
-  local result=0
-  for app in $SYS_REQS_MACOS; do
-    info "[sys_reqs_macos] adding: $app"
-    sudo apt install "$app"
-    result="$?"
-    [ ! "$result" -eq "0" ] && err "[sys_reqs_macos|out] could not install: $app" && exit 1
-	done
-  
-  local msg="[sys_reqs_macos|out] => ${result}"
-  [ ! "$result" -eq "0" ] && err "$msg" && exit 1
-  info "$msg"
-}
 
 ssh_default_key(){
   info "[ssh_default_key|in]"
@@ -294,8 +106,6 @@ usage(){
 
     commands:
       - update:               updates 'mysys'
-      - sys_basic_reqs				installs basic sys requirements
-      - sys_reqs							installs other sys requirements
       - ssh_default_key       creates a default ssh key if none exists
 EOM
   exit 1
@@ -307,14 +117,11 @@ case "$1" in
   update)
     update
     ;;
-  sys_basic_reqs)
-    sys_basic_reqs
-    ;;
-  sys_reqs)
-    sys_reqs
-    ;;
   ssh_default_key)
     ssh_default_key
+    ;;
+  update_from_dev)
+    update_from_dev_folder "/home/jtv/code/jtviegas/mysys/.mysys"
     ;;
   *)
     usage

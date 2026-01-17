@@ -5,18 +5,19 @@ export MYSYS_BIN="${MYSYS_PATH}/bin"
 export MYSYS_ENV="${MYSYS_PATH}/env"
 export PATH="${MYSYS_BIN}:${PATH}"
 
-
-# handy aliases
-
-alias k=kubectl
-
 # sourcing variables and secrets
-. "$MYSYS_ENV/.sys_variables"
 . "$MYSYS_ENV/.variables"
 . "$MYSYS_ENV/.secrets"
 
 # doing some initial setup
-if [ -f "$MYSYS_ENV/.init" ] ; then
-  . "$MYSYS_ENV/.init"
+$MYSYS_BIN/.mysys_basic_reqs.sh
+
+# add tools
+if [ -f "$MYSYS_BIN/.mysys_tools.sh" ] ; then
+  $MYSYS_BIN/.mysys_tools.sh
 fi
+
+
+# handy aliases
+alias k=kubectl
 
