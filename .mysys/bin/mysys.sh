@@ -93,7 +93,7 @@ sys_basic_reqs_linux(){
     which "$command" >/dev/null 2>&1
     # shellcheck disable=SC2181
     if [ $? -eq 0 ] ; then
-      info "[sys_basic_reqs_linux] $app is already installed - skipping"
+      #info "[sys_basic_reqs_linux] $app is already installed - skipping"
       continue
     fi
     info "[sys_basic_reqs_linux] adding: $app"
@@ -107,10 +107,10 @@ sys_basic_reqs_linux(){
     which "$command" >/dev/null 2>&1
     # shellcheck disable=SC2181
     if [ $? -eq 0 ] ; then
-      info "[sys_basic_reqs_linux] $app is already installed - skipping"
+      #info "[sys_basic_reqs_linux] $app is already installed - skipping"
       continue
     fi
-    info "[sys_basic_reqs_linux] adding: $command"
+    info "[sys_basic_reqs_linux] adding: $app"
     sudo apt install "$app"
     result="$?"
     [ ! "$result" -eq "0" ] && err "[sys_basic_reqs_linux] could not install: $app" && exit 1
@@ -138,7 +138,7 @@ sys_basic_reqs_macos(){
     which "$command" >/dev/null 2>&1
     # shellcheck disable=SC2181
     if [ $? -eq 0 ] ; then
-      info "[sys_basic_reqs_macos] $app is already installed - skipping"
+      #info "[sys_basic_reqs_macos] $app is already installed - skipping"
       continue
     fi
     info "[sys_basic_reqs_macos] adding: $app"
@@ -190,7 +190,7 @@ update(){
   tar xjpvf $TAR_FILE
    # shellcheck disable=SC2181
   [ ! "$?" -eq "0" ] && err "[update] could not untar it" && cd "$_pwd" && return 1
-  rm $TAR_FILE
+  rm $TAR_FILE*
 
   if [ -d "$CLAUDE_FOLDER" ] ; then
     info "[update] claude is here"
