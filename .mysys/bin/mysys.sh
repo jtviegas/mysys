@@ -37,7 +37,6 @@ export SYS_VARIABLES=${SYS_VARIABLES:-".sys_variables"}
 export FILE_VARIABLES=${FILE_VARIABLES:-".variables"}
 export FILE_SECRETS=${FILE_SECRETS:-".secrets"}
 export TAR_FILE="mysys.tar.bz2"
-
 # -------------------------------
 if [ ! -f "$env_folder/$SYS_VARIABLES" ]; then
   warn "we DON'T have a $SYS_VARIABLES variables file - creating it"
@@ -62,6 +61,113 @@ else
    # shellcheck disable=SC1090
   . "$env_folder/$FILE_SECRETS"
 fi
+
+# ---------- BASIC REQS ----------
+
+declare -A BASIC_REQS_ALL=( ["curl"]="curl" ["git"]="git" ["wget"]="wget" ["shellcheck"]="shellcheck" )
+export BASIC_REQS_ALL_VAR=$(declare -p BASIC_REQS_ALL)
+
+
+declare -A BASIC_REQS_LINUX=( ["snapd"]="snap" ["vim"]="vim" )
+export BASIC_REQS_LINUX_VAR=$(declare -p BASIC_REQS_LINUX)
+
+declare -A BASIC_REQS_MACOS
+export BASIC_REQS_MACOS_VAR=$(declare -p BASIC_REQS_MACOS)
+
+sys_basic_reqs_linux(){
+  info "[sys_basic_reqs_linux|in]"
+  
+  [ -z "$BASIC_REQS_ALL_VAR" ] && err "[sys_basic_reqs_linux|out] must provide BASIC_REQS_ALL_VAR env var" && usage
+  [ -z "$BASIC_REQS_LINUX_VAR" ] && err "[sys_basic_reqs_linux|out] must provide BASIC_REQS_LINUX_VAR env var" && usage
+
+  eval "$BASIC_REQS_ALL_VAR"
+  eval "$BASIC_REQS_LINUX_VAR"
+
+  local result=0
+  local command
+
+  for app in "${!BASIC_REQS_ALL[@]}"; do
+    command="${BASIC_REQS_ALL[$app]}"
+    $(which "$command" >/dev/null 2>&1)
+    if [ $? -eq 0 ] ; then
+      info "[sys_basic_reqs_linux] $app is already installed - skipping"
+      continue
+    fi
+    info "[sys_basic_reqs_linux] adding: $app"
+    sudo apt install "$app"
+    result="$?"
+    [ ! "$result" -eq "0" ] && err "[sys_basic_reqs_linux] could not install: $app" && exit 1
+	done
+
+  for app in "${!BASIC_REQS_LINUX[@]}"; do
+    command="${BASIC_REQS_LINUX[$app]}"
+    $(which "$command" >/dev/null 2>&1)
+    if [ $? -eq 0 ] ; then
+      info "[sys_basic_reqs_linux] $app is already installed - skipping"
+      continue
+    fi
+    info "[sys_basic_reqs_linux] adding: $command"
+    sudo apt install "$app"
+    result="$?"
+    [ ! "$result" -eq "0" ] && err "[sys_basic_reqs_linux] could not install: $app" && exit 1
+	done
+  
+  local msg="[sys_basic_reqs_linux|out] => ${result}"
+  [ ! "$result" -eq "0" ] && err "$msg" && exit 1
+  info "$msg"
+}
+
+sys_basic_reqs_macos(){
+  info "[sys_basic_reqs_macos|in]"
+
+  [ -z "$BASIC_REQS_ALL_VAR" ] && err "[sys_basic_reqs_macos|out] must provide BASIC_REQS_ALL_VAR env var" && usage
+  [ -z "$BASIC_REQS_MACOS_VAR" ] && err "[sys_basic_reqs_macos|out] must provide BASIC_REQS_MACOS_VAR env var" && usage
+
+  eval "$BASIC_REQS_ALL_VAR"
+  eval "$BASIC_REQS_MACOS_VAR"
+
+  local result=0
+  local command
+  
+  for app in "${!BASIC_REQS_ALL[@]}"; do
+    command="${BASIC_REQS_ALL[$app]}"
+    $(which "$command" >/dev/null 2>&1)
+    if [ $? -eq 0 ] ; then
+      info "[sys_basic_reqs_macos] $app is already installed - skipping"
+      continue
+    fi
+    info "[sys_basic_reqs_macos] adding: $app"
+    brew install "$app"
+    result="$?"
+    [ ! "$result" -eq "0" ] && err "[sys_basic_reqs_macos] could not install: $app" && exit 1
+	done
+
+  local msg="[sys_basic_reqs_macos|out] => ${result}"
+  [ ! "$result" -eq "0" ] && err "$msg" && exit 1
+  info "$msg"
+}
+
+sys_basic_reqs(){
+  info "[sys_basic_reqs|in]"
+  
+  local osname
+  osname=$(uname)
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+  	info "[sys_basic_reqs] running in MACOS"
+  	sys_basic_reqs_macos
+  elif [ "$osname" == "Linux" ]; then
+  	info "[sys_basic_reqs] running in LINUX"
+  	sys_basic_reqs_linux
+  else
+  	err "[sys_basic_reqs|out] as of now not supporting this OS" && exit 1
+  fi
+  result="$?"
+  local msg="[sys_basic_reqs|out] => ${result}"
+  [ ! "$result" -eq "0" ] && err "$msg" && exit 1
+  info "$msg"
+}
+
+
 
 # ---------- FUNCTIONS ----------
 
@@ -93,60 +199,6 @@ fi
   echo "[update] ...done."
 }
 
-
-sys_basic_reqs_macos(){
-  info "[sys_basic_reqs_macos|in]"
-  
-  [ -z "$BASIC_REQS_MACOS" ] && err "[sys_basic_reqs_macos|out] must provide BASIC_REQS_MACOS env var" && usage
-  local result=0
-  for app in $BASIC_REQS_MACOS; do
-    info "[sys_basic_reqs_macos] adding: $app"
-    sudo apt install "$app"
-    result="$?"
-    [ ! "$result" -eq "0" ] && err "[sys_basic_reqs_macos] could not install: $app" && exit 1
-	done
-  
-  local msg="[sys_basic_reqs_macos|out] => ${result}"
-  [ ! "$result" -eq "0" ] && err "$msg" && exit 1
-  info "$msg"
-}
-
-sys_basic_reqs_linux(){
-  info "[sys_basic_reqs_linux|in]"
-  
-  [ -z "$BASIC_REQS_LINUX" ] && err "[sys_basic_reqs_linux|out] must provide BASIC_REQS_LINUX env var" && usage
-  local result=0
-  for app in $BASIC_REQS_LINUX; do
-    info "[sys_basic_reqs_linux] adding: $app"
-    sudo apt install "$app"
-    result="$?"
-    [ ! "$result" -eq "0" ] && err "[sys_basic_reqs_linux] could not install: $app" && exit 1
-	done
-  
-  local msg="[sys_basic_reqs_linux|out] => ${result}"
-  [ ! "$result" -eq "0" ] && err "$msg" && exit 1
-  info "$msg"
-}
-
-sys_basic_reqs(){
-  info "[sys_basic_reqs|in]"
-  
-  local osname
-  osname=$(uname)
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-  	info "[sys_basic_reqs] running in MACOS"
-  	sys_basic_reqs_macos
-  elif [ "$osname" == "Linux" ]; then
-  	info "[sys_basic_reqs] running in LINUX"
-  	sys_basic_reqs_linux
-  else
-  	err "[sys_basic_reqs|out] can't support this OS" && exit 1
-  fi
-  result="$?"
-  local msg="[sys_basic_reqs|out] => ${result}"
-  [ ! "$result" -eq "0" ] && err "$msg" && exit 1
-  info "$msg"
-}
 
 sys_reqs(){
   info "[sys_reqs|in]"
@@ -209,7 +261,6 @@ sys_reqs_macos(){
   info "$msg"
 }
 
-
 ssh_default_key(){
   info "[ssh_default_key|in]"
 
@@ -228,11 +279,8 @@ ssh_default_key(){
   info "$msg"
 }
 
-# ---------- BE SURE TO HAVE BASIC REQS ----------
-sys_basic_reqs
-
 # -------------------------------------
-usage() {
+usage(){
   echo -n "mysys version: "
   cat "$this_folder/.version"
 
