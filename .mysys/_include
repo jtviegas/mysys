@@ -9,14 +9,6 @@ export PATH="${MYSYS_BIN}:${PATH}"
 . "$MYSYS_ENV/.variables"
 . "$MYSYS_ENV/.secrets"
 
-# doing some initial setup
-$MYSYS_BIN/.mysys_basic_reqs.sh
-
-# add tools
-if [ -f "$MYSYS_BIN/.mysys_tools.sh" ] ; then
-  $MYSYS_BIN/.mysys_tools.sh
-fi
-
 
 # handy aliases
 alias k=kubectl

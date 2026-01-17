@@ -20,18 +20,9 @@ err(){
 }
 
 # ---------- CONSTANTS ----------
-export SYS_VARIABLES=${SYS_VARIABLES:-".sys_variables"}
 export FILE_VARIABLES=${FILE_VARIABLES:-".variables"}
 export FILE_SECRETS=${FILE_SECRETS:-".secrets"}
 # -------------------------------
-if [ ! -f "$env_folder/$SYS_VARIABLES" ]; then
-  warn "we DON'T have a $SYS_VARIABLES variables file - creating it"
-  touch "$env_folder/$SYS_VARIABLES"
-else
-   # shellcheck disable=SC1090
-  . "$env_folder/$SYS_VARIABLES"
-fi
-
 if [ ! -f "$env_folder/$FILE_VARIABLES" ]; then
   warn "we DON'T have a $FILE_VARIABLES variables file - creating it"
   touch "$env_folder/$FILE_VARIABLES"
