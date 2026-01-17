@@ -65,14 +65,16 @@ fi
 # ---------- BASIC REQS ----------
 
 declare -A BASIC_REQS_ALL=( ["curl"]="curl" ["git"]="git" ["wget"]="wget" ["shellcheck"]="shellcheck" )
-export BASIC_REQS_ALL_VAR=$(declare -p BASIC_REQS_ALL)
-
+BASIC_REQS_ALL_VAR=$(declare -p BASIC_REQS_ALL)
+export BASIC_REQS_ALL_VAR
 
 declare -A BASIC_REQS_LINUX=( ["snapd"]="snap" ["vim"]="vim" )
-export BASIC_REQS_LINUX_VAR=$(declare -p BASIC_REQS_LINUX)
+BASIC_REQS_LINUX_VAR=$(declare -p BASIC_REQS_LINUX)
+export BASIC_REQS_LINUX_VAR
 
 declare -A BASIC_REQS_MACOS
-export BASIC_REQS_MACOS_VAR=$(declare -p BASIC_REQS_MACOS)
+BASIC_REQS_MACOS_VAR=$(declare -p BASIC_REQS_MACOS)
+export BASIC_REQS_MACOS_VAR
 
 sys_basic_reqs_linux(){
   info "[sys_basic_reqs_linux|in]"
@@ -88,7 +90,8 @@ sys_basic_reqs_linux(){
 
   for app in "${!BASIC_REQS_ALL[@]}"; do
     command="${BASIC_REQS_ALL[$app]}"
-    $(which "$command" >/dev/null 2>&1)
+    which "$command" >/dev/null 2>&1
+    # shellcheck disable=SC2181
     if [ $? -eq 0 ] ; then
       info "[sys_basic_reqs_linux] $app is already installed - skipping"
       continue
@@ -101,7 +104,8 @@ sys_basic_reqs_linux(){
 
   for app in "${!BASIC_REQS_LINUX[@]}"; do
     command="${BASIC_REQS_LINUX[$app]}"
-    $(which "$command" >/dev/null 2>&1)
+    which "$command" >/dev/null 2>&1
+    # shellcheck disable=SC2181
     if [ $? -eq 0 ] ; then
       info "[sys_basic_reqs_linux] $app is already installed - skipping"
       continue
@@ -131,7 +135,8 @@ sys_basic_reqs_macos(){
   
   for app in "${!BASIC_REQS_ALL[@]}"; do
     command="${BASIC_REQS_ALL[$app]}"
-    $(which "$command" >/dev/null 2>&1)
+    which "$command" >/dev/null 2>&1
+    # shellcheck disable=SC2181
     if [ $? -eq 0 ] ; then
       info "[sys_basic_reqs_macos] $app is already installed - skipping"
       continue

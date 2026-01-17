@@ -14,8 +14,7 @@ jobs:
     - name: Validate shell scripts with shellcheck
       run: |
         sudo apt-get update && sudo apt-get install -y shellcheck
-        shellcheck helper.sh
-        shellcheck .mysys/bin/mysys.sh
+        ./helper.sh shlint
     - name: create release bundle
       run: ./helper.sh release 
     - name: create release

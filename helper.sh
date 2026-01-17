@@ -98,6 +98,22 @@ export TAR_FILE="mysys.tar.bz2"
 
 # ---------- FUNCTIONS ----------
 
+shlint(){
+  info "[shlint|in]"
+
+  _pwd=$(pwd)
+  # shellcheck disable=SC2164
+  cd "$this_folder"
+
+  shellcheck helper.sh && shellcheck .mysys/bin/mysys.sh
+  result="$?"
+  # shellcheck disable=SC2164
+  cd "$_pwd"
+  [ ! "$result" -eq "0" ] && err "[shlint|out] lint failed" && exit 1
+
+  info "[shlint|out]"
+}
+
 release(){
   info "[release] ..."
 
@@ -119,6 +135,7 @@ usage() {
   $(basename "$0") { option }
     options:
       - release:                  packages mysys into a tar for release purposes
+      - shlint:                   lints the shell scripts
       - get_latest_tag            retrieves the latest git tag from the repository
       - tag COMMIT_HASH           creates a git tag and pushes it to remote repository, version is defined in .variables file
 EOM
@@ -136,6 +153,9 @@ case "$1" in
     ;;
   release)
     release
+    ;;
+  shlint)
+    shlint
     ;;
   *)
     usage
