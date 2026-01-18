@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2181,SC1091,SC2034
 
 # http://bash.cumulonim.biz/NullGlob.html
 shopt -s nullglob
@@ -8,10 +9,8 @@ if [ -z "$this_folder" ]; then
   this_folder=$(dirname "$(readlink -f "$0")")
 fi
 mysys_folder=$(dirname "$this_folder")
-# shellcheck disable=SC2034
 env_folder="$mysys_folder/env"
 # -------------------------------
-# shellcheck disable=SC1091
 . "$this_folder/.include.sh"
 
 # ---------- CONSTANTS ----------
@@ -35,14 +34,22 @@ else
 fi
 
 # ---------- main ----------
+info "[mysys_tools|in]"
 
-# --- freecad ---
 if [ "$osname" == "LINUX" ] ; then
+
   which freecad >/dev/null 2>&1
-  # shellcheck disable=SC2181
   if [ $? -ne 0 ] ; then
     info "[mysys_tools] installing freecad"
     sudo snap install freecad
   fi
+
+  which uv >/dev/null 2>&1
+  if [ $? -ne 0 ] ; then
+    info "[mysys_tools] installing uv"
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+  fi
+
 fi
 
+info "[mysys_tools|out]"

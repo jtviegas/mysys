@@ -37,6 +37,7 @@ sys_basic_reqs_linux(){
   sudo apt install mesa-vulkan-drivers
   sudo usermod -a -G video "$USER"
   sudo usermod -a -G render "$USER"
+  sudo apt install dconf-editor
 
   local result=0
   local command
