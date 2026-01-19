@@ -50,6 +50,14 @@ if [ "$osname" == "LINUX" ] ; then
     curl -LsSf https://astral.sh/uv/install.sh | sh
   fi
 
+  which foliate >/dev/null 2>&1
+  if [ $? -ne 0 ] ; then
+    info "[mysys_tools] installing foliate"
+    sudo add-apt-repository ppa:apandada1/foliate && \
+      sudo apt update && \ 
+      sudo apt install foliate
+  fi
+
 fi
 
 info "[mysys_tools|out]"
