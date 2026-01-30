@@ -58,6 +58,12 @@ if [ "$osname" == "LINUX" ] ; then
       sudo apt install foliate
   fi
 
+  which surfshark >/dev/null 2>&1
+  if [ $? -ne 0 ] ; then
+    info "[mysys_tools] installing surfshark"
+    sudo snap install surfshark
+  fi
+
 fi
 
 info "[mysys_tools|out]"
