@@ -64,6 +64,12 @@ if [ "$osname" == "LINUX" ] ; then
     sudo snap install surfshark
   fi
 
+  which sdk >/dev/null 2>&1
+  if [ $? -ne 0 ] ; then
+    info "[mysys_tools] installing sdkman"
+    curl -s "https://get.sdkman.io" | bash
+  fi
+
 fi
 
 info "[mysys_tools|out]"
