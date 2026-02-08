@@ -70,6 +70,12 @@ if [ "$osname" == "LINUX" ] ; then
     curl -s "https://get.sdkman.io" | bash
   fi
 
+  which xclip >/dev/null 2>&1
+  if [ $? -ne 0 ] ; then
+    info "[mysys_tools] installing xclip"
+    sudo apt install xclip
+  fi   
+
 fi
 
 info "[mysys_tools|out]"
