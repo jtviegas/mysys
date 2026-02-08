@@ -54,8 +54,8 @@ if [ "$osname" == "LINUX" ] ; then
   if [ $? -ne 0 ] ; then
     info "[mysys_tools] installing foliate"
     sudo add-apt-repository ppa:apandada1/foliate && \
-      sudo apt update && \ 
-      sudo apt install foliate
+      sudo apt update && \
+        sudo apt install foliate
   fi
 
   which surfshark >/dev/null 2>&1
