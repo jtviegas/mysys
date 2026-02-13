@@ -74,7 +74,14 @@ if [ "$osname" == "LINUX" ] ; then
   if [ $? -ne 0 ] ; then
     info "[mysys_tools] installing xclip"
     sudo apt install xclip
-  fi   
+  fi
+
+  which hf >/dev/null 2>&1
+  if [ $? -ne 0 ] ; then
+    info "[mysys_tools] installing hf"
+    curl -LsSf https://hf.co/cli/install.sh | bash
+  fi  
+
 
 fi
 
