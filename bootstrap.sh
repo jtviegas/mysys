@@ -7,7 +7,8 @@ echo "[bootstrap|in]"
 _pwd=$(pwd)
 
 [ ! -d "$MYSYS_FOLDER" ] && mkdir -p "$MYSYS_FOLDER/bin"
-cd "$MYSYS_FOLDER/bin" || cd "$_pwd" && exit 1
+cd "$MYSYS_FOLDER/bin" #|| cd "$_pwd" && exit 1
+echo "[bootstrap|in] in bin"
 curl -O https://raw.githubusercontent.com/jtviegas/mysys/main/.mysys/bin/mysys.sh && \
   chmod +x mysys.sh && \
   ./mysys.sh update
