@@ -44,7 +44,7 @@ cat <<-EOF
     sudo rkhunter --check
 
   make curls calls avoiding dns cache
-    curl -H "Cache-Control: no-cache" -H "Pragma: no-cache" .......
+    curl -H "Cache-Control: no-cache" -H "Pragma: no-cache" ".......?t=$(date +%s)"
 
 EOF
 

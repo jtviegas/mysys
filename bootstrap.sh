@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# http://bash.cumulonim.biz/NullGlob.html
-shopt -s nullglob
 # ---------- CONSTANTS ----------
 export MYSYS_FOLDER="$HOME/.mysys"
 # ---------- main ----------
