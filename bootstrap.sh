@@ -4,7 +4,7 @@ shopt -s nullglob
 # ---------- CONSTANTS ----------
 export MYSYS_FOLDER="$HOME/.mysys"
 # ---------- main ----------
-info "[bootstrap|in]"
+echo "[bootstrap|in]"
 
 _pwd=$(pwd)
 
@@ -16,4 +16,4 @@ wget https://raw.githubusercontent.com/jtviegas/mysys/main/.mysys/bin/mysys.sh &
 
 cd "$_pwd"
 
-info "[bootstrap|out]"
+echo "[bootstrap|out]"

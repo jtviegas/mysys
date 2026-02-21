@@ -43,6 +43,9 @@ cat <<-EOF
     sudo chkrootkit
     sudo rkhunter --check
 
+  make curls calls avoiding dns cache
+    curl -H "Cache-Control: no-cache" -H "Pragma: no-cache" .......
+
 EOF
 
 
