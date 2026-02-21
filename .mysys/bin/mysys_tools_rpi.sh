@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2181,SC1091,SC2034
 
-# http://bash.cumulonim.biz/NullGlob.html
-shopt -s nullglob
 # -------------------------------
 this_folder="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 if [ -z "$this_folder" ]; then

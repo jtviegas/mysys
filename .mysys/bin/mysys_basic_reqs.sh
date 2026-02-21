@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# http://bash.cumulonim.biz/NullGlob.html
-shopt -s nullglob
 # -------------------------------
 this_folder="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 if [ -z "$this_folder" ]; then
