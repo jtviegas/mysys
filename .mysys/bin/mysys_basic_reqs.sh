@@ -35,7 +35,7 @@ sys_basic_reqs_rpi(){
       continue
     fi
     info "[sys_basic_reqs_rpi] adding: $app"
-    sudo apt install "$app"
+    sudo apt install -y "$app"
     result="$?"
     [ ! "$result" -eq "0" ] && err "[sys_basic_reqs_rpi] could not install: $app" && exit 1
 	done
@@ -48,7 +48,7 @@ sys_basic_reqs_rpi(){
       continue
     fi
     info "[sys_basic_reqs_rpi] adding: $app"
-    sudo apt install "$app"
+    sudo apt install -y "$app"
     result="$?"
     [ ! "$result" -eq "0" ] && err "[sys_basic_reqs_rpi] could not install: $app" && exit 1
 	done
@@ -68,8 +68,8 @@ sys_basic_reqs_linux(){
   eval "$BASIC_REQS_LINUX_VAR"
 
   sudo apt update
-  sudo apt upgrade
-  sudo apt install dconf-editor
+  sudo apt -y upgrade
+  sudo apt install -y dconf-editor
 
   local result=0
   local command
@@ -82,7 +82,7 @@ sys_basic_reqs_linux(){
       continue
     fi
     info "[sys_basic_reqs_linux] adding: $app"
-    sudo apt install "$app"
+    sudo apt install -y "$app"
     result="$?"
     [ ! "$result" -eq "0" ] && err "[sys_basic_reqs_linux] could not install: $app" && exit 1
 	done
@@ -95,7 +95,7 @@ sys_basic_reqs_linux(){
       continue
     fi
     info "[sys_basic_reqs_linux] adding: $app"
-    sudo apt install "$app"
+    sudo apt install -y "$app"
     result="$?"
     [ ! "$result" -eq "0" ] && err "[sys_basic_reqs_linux] could not install: $app" && exit 1
 	done
