@@ -22,8 +22,12 @@ export TAR_FILE="mysys.tar.bz2"
 
 # ---------- find system OS ----------
 
+
 if [ "$(uname)" != "Linux" ]; then
   err "[mysys_tools_linux] this script can only run on a Linux OS" && exit 1
+else
+  uname -a | grep "rpt-rpi-v8"
+  [ $? -ne 0 ] && err "[mysys_tools_linux] this script can not run on my Raspberry Pi" && exit 1
 fi
 
 # ---------- main ----------

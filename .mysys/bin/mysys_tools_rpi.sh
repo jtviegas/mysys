@@ -30,46 +30,27 @@ fi
 # ---------- main ----------
 info "[mysys_tools_rpi|in]"
 
-sudo apt update && sudo apt install ca-certificates
-
-which sdk >/dev/null 2>&1
-if [ $? -ne 0 ] ; then
-  info "[mysys_tools_rpi] installing sdkman"
-  curl -s "https://get.sdkman.io" | bash
-fi
-
-which xclip >/dev/null 2>&1
-if [ $? -ne 0 ] ; then
-  info "[mysys_tools_rpi] installing xclip"
-  sudo apt install xclip
-fi
-
+sudo apt update && sudo apt install -y ca-certificates
 
 which docker >/dev/null 2>&1
 if [ $? -ne 0 ] ; then
   info "[mysys_tools_rpi] installing docker"
-  sudo apt remove "$(dpkg --get-selections docker.io docker-compose docker-compose-v2 docker-doc podman-docker containerd runc | cut -f1)"
-  # Add Docker's official GPG key:
-  sudo apt update
-  sudo apt install ca-certificates curl
-  sudo install -m 0755 -d /etc/apt/keyrings
-  sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-  sudo chmod a+r /etc/apt/keyrings/docker.asc
-
-  # Add the repository to Apt sources:
-  sudo tee /etc/apt/sources.list.d/docker.sources <<EOF
-Types: deb
-URIs: https://download.docker.com/linux/ubuntu
-Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
-Components: stable
-Signed-By: /etc/apt/keyrings/docker.asc
-EOF
-
-  sudo apt update
-  sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  curl -fsSL https://get.docker.com -o get-docker.sh
+  sudo sh get-docker.sh
   sudo groupadd docker
   sudo usermod -aG docker "$USER"
+  sudo apt install -y docker-compose-plugin
+  docker info | grep -i "architecture"
+  docker run hello-world
+  echo '{"log-driver": "json-file","log-opts":{"max-size": "10m","max-file": "3"}}' | sudo tee /etc/docker/daemon.json
+  sudo systemctl restart docker
+fi
 
+which node >/dev/null 2>&1
+if [ $? -ne 0 ] ; then
+  info "[mysys_tools_rpi] installing nodejs"
+  curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+  sudo apt install -y nodejs
 fi
 
 info "[mysys_tools_rpi|out]"
