@@ -7,8 +7,8 @@ configurations for my systems (laptop & Raspberry Pi)
 ```
 curl -LsSf https://raw.githubusercontent.com/jtviegas/mysys/main/bootstrap.sh | sh
 ```
-
-* __source__ the `.mysys/include` file in your system's profile initialisation file ( `.zprofile`, `.bash_profile`, `.bashrc`, etc... )
+* create your own `~/.mysys/include` from the provided `~/.mysys/_include` file 
+* then do __source__ `~/.mysys/include` file in your system's profile initialisation file ( `.zprofile`, `.bash_profile`, `.bashrc`, etc... )
     ```
     . ~/.mysys/include
     ```
