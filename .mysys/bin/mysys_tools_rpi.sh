@@ -77,16 +77,18 @@ if [ -n "$SAMBA_DISK" ]; then
   sudo mount -a
   sudo apt update
   sudo apt install samba samba-common-bin -y
+  # add user to samba
+  sudo smbpasswd -a "$USER" || exit 1
   # define samba share
   sudo tee -a /etc/samba/smb.conf <<EOF
 [samba]
    path = ${mount_point}
-   writeable = yes
+   read only = yes
+   guest ok = yes
+   write list = ${USER}
+   force user = ${USER}
    browseable = yes
    public = yes
-   guest ok = yes
-   guest only = yes
-   force user = ${USER}
 EOF
   sudo systemctl daemon-reload
   sudo systemctl restart smbd

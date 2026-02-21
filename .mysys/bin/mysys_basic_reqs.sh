@@ -44,7 +44,7 @@ sys_basic_reqs_rpi(){
     command="${BASIC_REQS_RPI[$app]}"
     which "$command" >/dev/null 2>&1
     if [ $? -eq 0 ] ; then
-      #info "[sys_basic_reqs_rpi] $app is already installed - skipping"
+      info "[sys_basic_reqs_rpi] $app is already installed - skipping"
       continue
     fi
     info "[sys_basic_reqs_rpi] adding: $app"
@@ -52,7 +52,14 @@ sys_basic_reqs_rpi(){
     result="$?"
     [ ! "$result" -eq "0" ] && err "[sys_basic_reqs_rpi] could not install: $app" && exit 1
 	done
-  
+
+  info "[sys_basic_reqs_rpi] setting up firewall and unattended upgrades"
+  sudo ufw allow ssh        # So you don't lock yourself out!
+  sudo ufw allow Samba      # Alternative Samba rule that covers both 445 and 139
+  sudo ufw enable || exit 1
+  sudo ufw status verbose
+  sudo dpkg-reconfigure -plow unattended-upgrades || exit 1
+
   local msg="[sys_basic_reqs_rpi|out] => ${result}"
   [ ! "$result" -eq "0" ] && err "$msg" && exit 1
   info "$msg"
@@ -91,7 +98,7 @@ sys_basic_reqs_linux(){
     command="${BASIC_REQS_LINUX[$app]}"
     which "$command" >/dev/null 2>&1
     if [ $? -eq 0 ] ; then
-      #info "[sys_basic_reqs_linux] $app is already installed - skipping"
+      info "[sys_basic_reqs_linux] $app is already installed - skipping"
       continue
     fi
     info "[sys_basic_reqs_linux] adding: $app"
@@ -99,6 +106,11 @@ sys_basic_reqs_linux(){
     result="$?"
     [ ! "$result" -eq "0" ] && err "[sys_basic_reqs_linux] could not install: $app" && exit 1
 	done
+
+  info "[sys_basic_reqs_linux] setting up firewall and unattended upgrades"
+  sudo ufw enable || exit 1
+  sudo ufw status verbose
+  sudo dpkg-reconfigure -plow unattended-upgrades || exit 1
   
   local msg="[sys_basic_reqs_linux|out] => ${result}"
   [ ! "$result" -eq "0" ] && err "$msg" && exit 1
@@ -121,7 +133,7 @@ sys_basic_reqs_macos(){
     command="${BASIC_REQS_ALL[$app]}"
     which "$command" >/dev/null 2>&1
     if [ $? -eq 0 ] ; then
-      #info "[sys_basic_reqs_macos] $app is already installed - skipping"
+      info "[sys_basic_reqs_macos] $app is already installed - skipping"
       continue
     fi
     info "[sys_basic_reqs_macos] adding: $app"
@@ -171,11 +183,11 @@ declare -A BASIC_REQS_ALL=( ["curl"]="curl" ["git"]="git" ["wget"]="wget" ["shel
 BASIC_REQS_ALL_VAR=$(declare -p BASIC_REQS_ALL)
 export BASIC_REQS_ALL_VAR
 
-declare -A BASIC_REQS_LINUX=( ["snapd"]="snap" ["vim"]="vim" ["mesa-utils"]="glxinfo" ["rkhunter"]="rkhunter" ["chkrootkit"]="chkrootkit" )
+declare -A BASIC_REQS_LINUX=( ["snapd"]="snap" ["vim"]="vim" ["mesa-utils"]="glxinfo" ["rkhunter"]="rkhunter" ["chkrootkit"]="chkrootkit" ["ufw"]="ufw" ["unattended-upgrades"]="unattended-upgrades" )
 BASIC_REQS_LINUX_VAR=$(declare -p BASIC_REQS_LINUX)
 export BASIC_REQS_LINUX_VAR
 
-declare -A BASIC_REQS_RPI=( ["vim"]="vim" ["rkhunter"]="rkhunter" ["chkrootkit"]="chkrootkit" )
+declare -A BASIC_REQS_RPI=( ["vim"]="vim" ["rkhunter"]="rkhunter" ["chkrootkit"]="chkrootkit" ["ufw"]="ufw" ["fail2ban"]="fail2ban" ["unattended-upgrades"]="unattended-upgrades" )
 BASIC_REQS_RPI_VAR=$(declare -p BASIC_REQS_RPI)
 export BASIC_REQS_RPI_VAR
 
