@@ -26,3 +26,12 @@ oci ce cluster create-kubeconfig \
 --region eu-stockholm-1 \
 --token-version 2.0.0 \
 --kube-endpoint PUBLIC_ENDPOINT
+
+oci ce cluster create \
+--name "k8s-cluster" \
+--type BASIC_CLUSTER \
+--compartment-id  ocid1.compartment.oc1..aaaaaaaa3p6dguw3enadvronsgbvv3x6n5dqybl5sqrzdvmaiq4ljnnthx4a \
+--vcn-id ocid1.vcn.oc1.eu-stockholm-1.amaaaaaart3sc6ia4smbb2hi5xj2mna2pnbhcaowg3zb3rmgm7nmoskpoliq \
+--kubernetes-version v1.31.1 \
+--endpoint-subnet-id ocid1.subnet.oc1.eu-stockholm-1.aaaaaaaavcbf4aggdkunkx4jbi4zdtmnf63kchvyhkd7bfi7z2fklev3fk2a \
+--endpoint-public-ip-enabled true

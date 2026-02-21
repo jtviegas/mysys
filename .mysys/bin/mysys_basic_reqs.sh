@@ -1,17 +1,14 @@
 #!/usr/bin/env bash
-
+# shellcheck disable=SC2181,SC1091,SC2034
 # -------------------------------
 this_folder="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 if [ -z "$this_folder" ]; then
   this_folder=$(dirname "$(readlink -f "$0")")
 fi
 mysys_folder=$(dirname "$this_folder")
-# shellcheck disable=SC2034
 env_folder="$mysys_folder/env"
 # -------------------------------
-# shellcheck disable=SC1091
 . "$this_folder/.include.sh"
-
 # ---------- CONSTANTS ----------
 
 # ---------- FUNCTIONS ----------
@@ -33,7 +30,6 @@ sys_basic_reqs_rpi(){
   for app in "${!BASIC_REQS_ALL[@]}"; do
     command="${BASIC_REQS_ALL[$app]}"
     which "$command" >/dev/null 2>&1
-    # shellcheck disable=SC2181
     if [ $? -eq 0 ] ; then
       #info "[sys_basic_reqs_linux] $app is already installed - skipping"
       continue
@@ -47,7 +43,6 @@ sys_basic_reqs_rpi(){
   for app in "${!BASIC_REQS_RPI[@]}"; do
     command="${BASIC_REQS_RPI[$app]}"
     which "$command" >/dev/null 2>&1
-    # shellcheck disable=SC2181
     if [ $? -eq 0 ] ; then
       #info "[sys_basic_reqs_rpi] $app is already installed - skipping"
       continue
@@ -82,7 +77,6 @@ sys_basic_reqs_linux(){
   for app in "${!BASIC_REQS_ALL[@]}"; do
     command="${BASIC_REQS_ALL[$app]}"
     which "$command" >/dev/null 2>&1
-    # shellcheck disable=SC2181
     if [ $? -eq 0 ] ; then
       #info "[sys_basic_reqs_linux] $app is already installed - skipping"
       continue
@@ -96,7 +90,6 @@ sys_basic_reqs_linux(){
   for app in "${!BASIC_REQS_LINUX[@]}"; do
     command="${BASIC_REQS_LINUX[$app]}"
     which "$command" >/dev/null 2>&1
-    # shellcheck disable=SC2181
     if [ $? -eq 0 ] ; then
       #info "[sys_basic_reqs_linux] $app is already installed - skipping"
       continue
@@ -127,7 +120,6 @@ sys_basic_reqs_macos(){
   for app in "${!BASIC_REQS_ALL[@]}"; do
     command="${BASIC_REQS_ALL[$app]}"
     which "$command" >/dev/null 2>&1
-    # shellcheck disable=SC2181
     if [ $? -eq 0 ] ; then
       #info "[sys_basic_reqs_macos] $app is already installed - skipping"
       continue
@@ -148,7 +140,6 @@ sys_basic_reqs(){
   
   local osname
   uname -a | grep "rpt-rpi-v8"
-  # shellcheck disable=SC2181
   if [ $? -eq 0 ] ; then
     osname="RPT-RPI-V8"
   else
