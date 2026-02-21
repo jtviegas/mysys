@@ -8,17 +8,6 @@ configurations for my systems (laptop & Raspberry Pi)
 curl -LsSf https://raw.githubusercontent.com/jtviegas/mysys/main/bootstrap.sh | sh
 ```
 
-you should now see this when running `./mysys.sh`:
-```
- [WARN]  Wed Nov 12 17:31:16 CET 2025 *** we DON'T have a .variables variables file - creating it
- [WARN]  Wed Nov 12 17:31:16 CET 2025 *** we DON'T have a .secrets secrets file - creating it
- [DEBUG] Wed Nov 12 17:31:16 CET 2025 ... 1:  2:  3:  4:  5:  6:  7:  8:  9:
-  usage:
-  mysys.sh { command }
-
-    commands:
-      - update: updates 'mysys'
-```
 * __source__ the `.mysys/include` file in your system's profile initialisation file ( `.zprofile`, `.bash_profile`, `.bashrc`, etc... )
     ```
     . ~/.mysys/include
