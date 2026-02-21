@@ -39,7 +39,6 @@ if [ $? -ne 0 ] ; then
   sudo sh get-docker.sh
   sudo groupadd docker
   sudo usermod -aG docker "$USER"
-  sudo apt install -y docker-compose-plugin
   docker info | grep -i "architecture"
   docker run hello-world
   echo '{"log-driver": "json-file","log-opts":{"max-size": "10m","max-file": "3"}}' | sudo tee /etc/docker/daemon.json
