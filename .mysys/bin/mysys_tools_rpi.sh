@@ -52,4 +52,12 @@ if [ $? -ne 0 ] ; then
   sudo apt install -y nodejs
 fi
 
+which claude >/dev/null 2>&1
+if [ $? -ne 0 ] ; then
+  info "[mysys_tools_rpi] installing claude"
+  curl -fsSL https://claude.ai/install.sh | bash
+fi
+
+
+
 info "[mysys_tools_rpi|out]"
