@@ -30,8 +30,8 @@ fi
 # ---------- main ----------
 info "[mysys_tools_rpi|in]"
 
-info "[mysys_tools_rpi] if you want to install a samba share do export variable SAMBA_DISK and MOUNT_POINT and re-run this script"
-info "[mysys_tools_rpi] examples: SAMBA_DISK=/dev/sda1 MOUNT_POINT=/mnt/share"
+info "[mysys_tools_rpi] if you want to install a samba share do export variable SAMBA_DISK and, optionally, MOUNT_POINT and re-run this script"
+info "[mysys_tools_rpi] examples: SAMBA_DISK=/dev/sda1 (hint: call lsblk to list disks) MOUNT_POINT=/mnt/share (default: /mnt/samba)"
 
 sudo apt update && sudo apt install -y ca-certificates
 
@@ -61,23 +61,26 @@ if [ $? -ne 0 ] ; then
   curl -fsSL https://claude.ai/install.sh | bash
 fi
 
-if [ -n "$SAMBA_DISK" ] && [ -n "$MOUNT_POINT" ]; then
-  info "[mysys_tools_rpi] installing samba"
+
+if [ -n "$SAMBA_DISK" ]; then
+  mount_point=/mnt/samba
+  [ -n "$MOUNT_POINT" ] && mount_point="$MOUNT_POINT"
+  info "[mysys_tools_rpi] installing samba share for disk: $SAMBA_DISK and mount point: $mount_point"
   disk_id=$(sudo blkid "$SAMBA_DISK" | grep -Po ' UUID="\K[^"]+')
   fstype=$(sudo blkid -o value -s TYPE "$SAMBA_DISK")
   info "[mysys_tools_rpi] disk id: $disk_id"
-  sudo mkdir -p "$MOUNT_POINT"
-  sudo chown "$USER:$USER" "$MOUNT_POINT"
-  sudo chmod -R 777 "$MOUNT_POINT"
+  sudo mkdir -p "$mount_point"
+  sudo chown "$USER:$USER" "$mount_point"
+  sudo chmod -R 777 "$mount_point"
   sudo cp /etc/fstab /etc/fstab.bak
-  echo "UUID=$disk_id $MOUNT_POINT $fstype defaults,user,rw,nofail,uid=1000,gid=1000,umask=000  0  0" | sudo tee -a /etc/fstab
+  echo "UUID=$disk_id $mount_point $fstype defaults,user,rw,nofail,uid=1000,gid=1000,umask=000  0  0" | sudo tee -a /etc/fstab
   sudo mount -a
   sudo apt update
   sudo apt install samba samba-common-bin -y
   # define samba share
   sudo tee -a /etc/samba/smb.conf <<EOF
 [samba]
-   path = ${MOUNT_POINT}
+   path = ${mount_point}
    writeable = yes
    browseable = yes
    public = yes
@@ -85,9 +88,8 @@ if [ -n "$SAMBA_DISK" ] && [ -n "$MOUNT_POINT" ]; then
    guest only = yes
    force user = ${USER}
 EOF
+  sudo systemctl daemon-reload
   sudo systemctl restart smbd
-
-
 fi
 
 
