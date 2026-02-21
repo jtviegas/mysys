@@ -22,7 +22,6 @@ export TAR_FILE="mysys.tar.bz2"
 
 # ---------- find system OS ----------
 
-local osname
 uname -a | grep "rpt-rpi-v8"
 # shellcheck disable=SC2181
 if [ $? -ne 0 ] ; then
