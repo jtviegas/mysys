@@ -47,44 +47,18 @@ update(){
   echo "[update|out]"
 }
 
-update_from_dev_folder(){
-  echo "[update_from_dev_folder|in] ($1)"
-
-   [ -z "$1" ] && err "[update_from_dev_folder|out] must provide DEV_FOLDER var" && usage
-   local dev_folder="$1"
-
-  _pwd=$(pwd)
-  if [ ! -d "$mysys_folder" ]; then
-    err "can't find $mysys_folder folder ! sorry I am leaving"
-    exit 1
-  fi
-
-  cd "$mysys_folder" || exit 1
-
-  cp -r "$dev_folder"/* ./
-   # shellcheck disable=SC2181
-  [ ! "$?" -eq "0" ] && err "[update_from_dev_folder] could not copy it" && cd "$_pwd" && return 1
-
-  if [ -d "$CLAUDE_FOLDER" ] ; then
-    info "[update_from_dev_folder] claude is here"
-    [ ! -d "$CLAUDE_FOLDER/skills" ] && mkdir -p "$CLAUDE_FOLDER/skills"
-    cd "$CLAUDE_FOLDER/skills" && ln -sf "$mysys_folder/agent_skills/coder" "coder"
-    info "[update_from_dev_folder] coder skill added to claude"
-  fi  
-
-  cd "$_pwd" || exit 1
-  echo "[update_from_dev_folder|out]"
-}
 
 
 ssh_default_key(){
-  info "[ssh_default_key|in]"
+  info "[ssh_default_key|in] ($1)"
 
+  [ -z "$1" ] && err "[ssh_default_key|out] must provide EMAIL parameter" && exit 
+  local EMAIL="$1"
 	local key="id_rsa"
   local result=0
   if [ ! -f "$HOME/.ssh/${key}" ]; then
   	info "creating new ssh key: ${key}"
-  	ssh-keygen -t rsa -b 4096 -C "jtviegas@gmail.com" && \
+  	ssh-keygen -t rsa -b 4096 -C "$EMAIL" && \
   		eval "$(ssh-agent -s)" && \
   		ssh-add ~/.ssh/${key}
   	 result="$?"
@@ -105,8 +79,8 @@ usage(){
   $(basename "$0") { command }
 
     commands:
-      - update:               updates 'mysys'
-      - ssh_default_key       creates a default ssh key if none exists
+      - update:                       updates 'mysys'
+      - ssh_default_key <EMAIL>       creates a default ssh key if none exists
 EOM
   exit 1
 }
@@ -118,10 +92,7 @@ case "$1" in
     update
     ;;
   ssh_default_key)
-    ssh_default_key
-    ;;
-  update_from_dev)
-    update_from_dev_folder "/home/jtv/code/jtviegas/mysys/.mysys"
+    ssh_default_key "$2"
     ;;
   *)
     usage

@@ -1,0 +1,28 @@
+oci ce cluster create \
+--name "k8s-cluster" \
+--type BASIC_CLUSTER \
+--compartment-id  ocid1.compartment.oc1..aaaaaaaa3p6dguw3enadvronsgbvv3x6n5dqybl5sqrzdvmaiq4ljnnthx4a \
+--vcn-id ocid1.vcn.oc1.eu-stockholm-1.amaaaaaart3sc6ia4smbb2hi5xj2mna2pnbhcaowg3zb3rmgm7nmoskpoliq \
+--kubernetes-version v1.31.1 \
+--endpoint-subnet-id ocid1.subnet.oc1.eu-stockholm-1.aaaaaaaavcbf4aggdkunkx4jbi4zdtmnf63kchvyhkd7bfi7z2fklev3fk2a \
+--endpoint-public-ip-enabled true
+
+
+oci ce node-pool create \
+--cluster-id ocid1.cluster.oc1.eu-stockholm-1.aaaaaaaas5lydw334wjrctjjdozwmptszagfuegclhyhs5nspcaaq7uzv5nq \
+--name nodepool \
+--compartment-id  ocid1.compartment.oc1..aaaaaaaa3p6dguw3enadvronsgbvv3x6n5dqybl5sqrzdvmaiq4ljnnthx4a \
+--node-shape VM.Standard.A1.Flex \
+--node-shape-config '{"ocpus":1,"memoryInGBs":6}' \
+--size 3 \
+--node-image-id ocid1.image.oc1.eu-stockholm-1.aaaaaaaalf4jydhbc6xuykih5qfkzv7k3hhigmimhozyppgdt6wehu3vmmra \
+--placement-configs '[{"availabilityDomain":"WsBK:EU-STOCKHOLM-1-AD-1", "faultDomains":["FAULT-DOMAIN-2", "FAULT-DOMAIN-3"], "subnetId":"ocid1.subnet.oc1.eu-stockholm-1.aaaaaaaa5atsn5fzljgklp42fygjfdpyi7hnnpvaddfsclvakzvstucdgjsq"}]' \
+--ssh-public-key "SSH_KEY"
+
+# connect to kubectl (cloud shell)
+oci ce cluster create-kubeconfig \
+--cluster-id ocid1.cluster.oc1.eu-stockholm-1.aaaaaaaas5lydw334wjrctjjdozwmptszagfuegclhyhs5nspcaaq7uzv5nq \
+--file $HOME/.kube/config \
+--region eu-stockholm-1 \
+--token-version 2.0.0 \
+--kube-endpoint PUBLIC_ENDPOINT

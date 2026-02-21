@@ -1,21 +1,12 @@
 # mysys
-configurations for my system (laptop)
+configurations for my systems (laptop & Raspberry Pi)
 
 ## getting started
 
-* create `~/.mysys/bin` folder:
-    ```
-    mkdir -p ~/.mysys/bin
-    ```
-
-* download `mysys.sh` script
-  * ... from `~/.mysys/bin` folder
-    ```
-    cd ~/.mysys/bin
-    wget https://raw.githubusercontent.com/jtviegas/mysys/main/.mysys/bin/mysys.sh
-    ```
-  * make it executable: `chmod +x mysys.sh`
-  * update __mysys__ with latest version from the github repo: `./mysys.sh update`
+* run:
+```
+curl -LsSf https://raw.githubusercontent.com/jtviegas/mysys/main/bootstrap.sh | sh
+```
 
 you should now see this when running `./mysys.sh`:
 ```
@@ -41,7 +32,9 @@ you should now see this when running `./mysys.sh`:
     mysys.sh { command }
 
       commands:
-        - update: updates 'mysys'
+        - update:               updates 'mysys'
+        - ssh_default_key       creates a default ssh key if none exists
+
   ```
 
 ## usage
