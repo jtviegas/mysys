@@ -111,5 +111,10 @@ EOF
 
 fi
 
+which tailscale >/dev/null 2>&1
+if [ $? -ne 0 ] ; then
+  info "[mysys_tools_linux] installing tailscale"
+  curl -fsSL https://tailscale.com/install.sh | sh
+fi
 
 info "[mysys_tools_linux|out]"
